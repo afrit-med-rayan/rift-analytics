@@ -1,0 +1,36 @@
+{
+    "percentiles": {
+        "p25": {
+            "kda_ratio": 2.6,
+            "gold_per_min": 366.6091604841859,
+            "damage_efficiency": 1.196351408101195,
+            "kill_participation": 0.3928571428571428,
+            "vision_control": 0.0,
+            "death_rate": 0.0899100899100899
+        },
+        "p50": {
+            "kda_ratio": 4.0,
+            "gold_per_min": 407.92499541466987,
+            "damage_efficiency": 1.618171250737446,
+            "kill_participation": 0.4893617021276595,
+            "vision_control": 0.4026845637583893,
+            "death_rate": 0.1418439716312056
+        },
+        "p75": {
+            "kda_ratio": 6.333333333333333,
+            "gold_per_min": 451.25844012016273,
+            "damage_efficiency": 2.069018349135527,
+            "kill_participation": 0.5882352941176471,
+            "vision_control": 0.7429420505200595,
+            "death_rate": 0.196640721015977
+        }
+    },
+    "ml_importance": {
+        "kda_ratio": 0.4667600742817137,
+        "gold_per_min": 0.2614596278317003,
+        "damage_efficiency": 0.020947183847962077,
+        "kill_participation": 0.1530864042112685,
+        "vision_control": 0.006445149142807058,
+        "death_rate": 0.09130156068454835
+    }
+}
