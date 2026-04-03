@@ -1,0 +1,170 @@
+import React from 'react';
+
+/**
+ * InsightPanel.jsx — Renders priority-sorted insight cards with severity styling.
+ */
+
+const SEVERITY_CONFIG = {
+  high: {
+    label: 'High Priority',
+    color: 'var(--sev-high)',
+    bg: 'rgba(244, 63, 94, 0.07)',
+    border: 'rgba(244, 63, 94, 0.2)',
+    icon: '🔴',
+    bar: 'var(--sev-high)',
+  },
+  medium: {
+    label: 'Medium Priority',
+    color: 'var(--sev-medium)',
+    bg: 'rgba(245, 158, 11, 0.07)',
+    border: 'rgba(245, 158, 11, 0.2)',
+    icon: '🟡',
+    bar: 'var(--sev-medium)',
+  },
+  low: {
+    label: 'Positive',
+    color: 'var(--sev-low)',
+    bg: 'rgba(16, 185, 129, 0.07)',
+    border: 'rgba(16, 185, 129, 0.2)',
+    icon: '🟢',
+    bar: 'var(--sev-low)',
+  },
+};
+
+function InsightCard({ insight, index }) {
+  const cfg = SEVERITY_CONFIG[insight.severity] ?? SEVERITY_CONFIG.low;
+
+  return (
+    <div
+      className={`fade-up fade-up-${Math.min(index + 1, 5)}`}
+      style={{
+        background: cfg.bg,
+        border: `1px solid ${cfg.border}`,
+        borderRadius: '12px',
+        padding: '16px',
+        position: 'relative',
+        overflow: 'hidden',
+        transition: 'transform 220ms cubic-bezier(0.4,0,0.2,1), box-shadow 220ms cubic-bezier(0.4,0,0.2,1)',
+        cursor: 'default',
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.transform = 'translateY(-2px)';
+        e.currentTarget.style.boxShadow = `0 8px 24px ${cfg.border}`;
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = 'translateY(0)';
+        e.currentTarget.style.boxShadow = 'none';
+      }}
+    >
+      {/* Severity accent bar */}
+      <div style={{
+        position: 'absolute',
+        left: 0,
+        top: 0,
+        bottom: 0,
+        width: '3px',
+        background: cfg.bar,
+        borderRadius: '12px 0 0 12px',
+      }} />
+
+      <div style={{ paddingLeft: '8px' }}>
+        {/* Header row */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          marginBottom: '8px',
+        }}>
+          <span style={{ fontSize: '0.85rem' }}>{cfg.icon}</span>
+          <span style={{
+            fontSize: '0.65rem',
+            fontWeight: 700,
+            letterSpacing: '0.1em',
+            textTransform: 'uppercase',
+            color: cfg.color,
+          }}>
+            {cfg.label}
+          </span>
+          <span style={{
+            marginLeft: 'auto',
+            fontSize: '0.65rem',
+            color: 'var(--txt-muted)',
+            fontFamily: 'JetBrains Mono, monospace',
+          }}>
+            #{index + 1}
+          </span>
+        </div>
+
+        {/* Insight text */}
+        <p style={{
+          fontSize: '0.87rem',
+          color: 'var(--txt-primary)',
+          lineHeight: 1.65,
+          opacity: 0.9,
+        }}>
+          {insight.text}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+export default function InsightPanel({ insights }) {
+  if (!insights) {
+    return (
+      <div className="glass-card">
+        <p className="card-title">AI Insights</p>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="skeleton" style={{ height: '80px', borderRadius: '12px' }} />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  const highCount = insights.filter((i) => i.severity === 'high').length;
+  const medCount = insights.filter((i) => i.severity === 'medium').length;
+  const lowCount = insights.filter((i) => i.severity === 'low').length;
+
+  return (
+    <div className="glass-card fade-up fade-up-1">
+      {/* Panel header */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
+        <p className="card-title" style={{ marginBottom: 0 }}>AI Insights</p>
+        <div style={{ display: 'flex', gap: '6px' }}>
+          {highCount > 0 && (
+            <span className="badge badge-rose">{highCount} critical</span>
+          )}
+          {medCount > 0 && (
+            <span className="badge badge-gold">{medCount} medium</span>
+          )}
+          {lowCount > 0 && (
+            <span className="badge badge-emerald">{lowCount} positive</span>
+          )}
+        </div>
+      </div>
+
+      {/* Insight cards */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        {insights.map((insight, i) => (
+          <InsightCard key={i} insight={insight} index={i} />
+        ))}
+      </div>
+
+      {/* Footer note */}
+      <div style={{
+        marginTop: '16px',
+        padding: '10px 14px',
+        background: 'rgba(139, 92, 246, 0.06)',
+        border: '1px solid rgba(139, 92, 246, 0.1)',
+        borderRadius: '8px',
+        fontSize: '0.74rem',
+        color: 'var(--txt-muted)',
+        lineHeight: 1.5,
+      }}>
+        💡 Insights are generated by combining rule-based thresholds with ML feature importances from XGBoost.
+      </div>
+    </div>
+  );
+}

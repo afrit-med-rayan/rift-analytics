@@ -1,0 +1,303 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+/* ============================================================
+   CSS Design Tokens
+   ============================================================ */
+:root {
+  /* Color palette */
+  --clr-bg:          #07080f;
+  --clr-bg-2:        #0d0e1a;
+  --clr-surface:     rgba(255, 255, 255, 0.04);
+  --clr-surface-hover: rgba(255, 255, 255, 0.07);
+  --clr-border:      rgba(255, 255, 255, 0.08);
+  --clr-border-glow: rgba(139, 92, 246, 0.35);
+
+  /* Accent — violet / gold */
+  --clr-violet:      #8b5cf6;
+  --clr-violet-dim:  rgba(139, 92, 246, 0.15);
+  --clr-gold:        #f59e0b;
+  --clr-gold-dim:    rgba(245, 158, 11, 0.15);
+  --clr-cyan:        #22d3ee;
+  --clr-cyan-dim:    rgba(34, 211, 238, 0.12);
+  --clr-rose:        #f43f5e;
+  --clr-rose-dim:    rgba(244, 63, 94, 0.15);
+  --clr-emerald:     #10b981;
+  --clr-emerald-dim: rgba(16, 185, 129, 0.15);
+
+  /* Severity */
+  --sev-high:   #f43f5e;
+  --sev-medium: #f59e0b;
+  --sev-low:    #10b981;
+
+  /* Text */
+  --txt-primary:   #f1f5f9;
+  --txt-secondary: #94a3b8;
+  --txt-muted:     #475569;
+
+  /* Spacing */
+  --gap-xs:  4px;
+  --gap-sm:  8px;
+  --gap-md:  16px;
+  --gap-lg:  24px;
+  --gap-xl:  40px;
+
+  /* Radius */
+  --r-sm: 8px;
+  --r-md: 16px;
+  --r-lg: 24px;
+
+  /* Transition */
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --dur: 220ms;
+}
+
+/* ============================================================
+   Reset & Base
+   ============================================================ */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Outfit', system-ui, sans-serif;
+  background: var(--clr-bg);
+  color: var(--txt-primary);
+  min-height: 100vh;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ============================================================
+   Background Gradient Orbs (global)
+   ============================================================ */
+body::before,
+body::after {
+  content: '';
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(120px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+body::before {
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.12) 0%, transparent 70%);
+  top: -200px;
+  left: -100px;
+  animation: orbDrift1 20s ease-in-out infinite;
+}
+
+body::after {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.08) 0%, transparent 70%);
+  bottom: -150px;
+  right: -100px;
+  animation: orbDrift2 25s ease-in-out infinite;
+}
+
+@keyframes orbDrift1 {
+  0%, 100% { transform: translate(0, 0); }
+  50%       { transform: translate(60px, 40px); }
+}
+@keyframes orbDrift2 {
+  0%, 100% { transform: translate(0, 0); }
+  50%       { transform: translate(-40px, -60px); }
+}
+
+/* ============================================================
+   Layout
+   ============================================================ */
+#root {
+  position: relative;
+  z-index: 1;
+}
+
+.app-wrapper {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: var(--gap-lg) var(--gap-lg) var(--gap-xl);
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--gap-lg);
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--gap-lg);
+}
+
+.grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--gap-lg);
+}
+
+@media (max-width: 1100px) {
+  .grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .grid-3 { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 700px) {
+  .grid-4, .grid-3, .grid-2 { grid-template-columns: 1fr; }
+  .app-wrapper { padding: var(--gap-md); }
+}
+
+/* ============================================================
+   Glass Card
+   ============================================================ */
+.glass-card {
+  background: var(--clr-surface);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--r-md);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  padding: var(--gap-lg);
+  transition: border-color var(--dur) var(--ease),
+              box-shadow var(--dur) var(--ease),
+              transform var(--dur) var(--ease);
+}
+
+.glass-card:hover {
+  border-color: var(--clr-border-glow);
+  box-shadow: 0 0 32px rgba(139, 92, 246, 0.08);
+  transform: translateY(-2px);
+}
+
+.card-title {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--txt-secondary);
+  margin-bottom: var(--gap-md);
+}
+
+.section-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--txt-primary);
+  margin-bottom: var(--gap-lg);
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+}
+
+.section-title::before {
+  content: '';
+  display: block;
+  width: 4px;
+  height: 1.2em;
+  background: linear-gradient(to bottom, var(--clr-violet), var(--clr-gold));
+  border-radius: 2px;
+}
+
+/* ============================================================
+   Badge / Pill
+   ============================================================ */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gap-xs);
+  padding: 3px 10px;
+  border-radius: 99px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+
+.badge-violet {
+  background: var(--clr-violet-dim);
+  color: var(--clr-violet);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+}
+.badge-gold {
+  background: var(--clr-gold-dim);
+  color: var(--clr-gold);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+.badge-cyan {
+  background: var(--clr-cyan-dim);
+  color: var(--clr-cyan);
+  border: 1px solid rgba(34, 211, 238, 0.3);
+}
+.badge-rose {
+  background: var(--clr-rose-dim);
+  color: var(--clr-rose);
+  border: 1px solid rgba(244, 63, 94, 0.3);
+}
+.badge-emerald {
+  background: var(--clr-emerald-dim);
+  color: var(--clr-emerald);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+/* ============================================================
+   Loading Skeleton
+   ============================================================ */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,0.04) 25%,
+    rgba(255,255,255,0.08) 50%,
+    rgba(255,255,255,0.04) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: var(--r-sm);
+}
+
+@keyframes shimmer {
+  from { background-position: 200% 0; }
+  to   { background-position: -200% 0; }
+}
+
+/* ============================================================
+   Scrollbar
+   ============================================================ */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(139, 92, 246, 0.3); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(139, 92, 246, 0.5); }
+
+/* ============================================================
+   Utility
+   ============================================================ */
+.mono { font-family: 'JetBrains Mono', monospace; }
+.text-secondary { color: var(--txt-secondary); }
+.text-muted { color: var(--txt-muted); }
+.mt-sm { margin-top: var(--gap-sm); }
+.mt-md { margin-top: var(--gap-md); }
+.mt-lg { margin-top: var(--gap-lg); }
+.w-full { width: 100%; }
+
+/* ============================================================
+   Fade-in animation (applied via JS / CSS class)
+   ============================================================ */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.fade-up {
+  animation: fadeUp 0.5s var(--ease) both;
+}
+
+.fade-up-1 { animation-delay: 0.05s; }
+.fade-up-2 { animation-delay: 0.10s; }
+.fade-up-3 { animation-delay: 0.15s; }
+.fade-up-4 { animation-delay: 0.20s; }
+.fade-up-5 { animation-delay: 0.25s; }
