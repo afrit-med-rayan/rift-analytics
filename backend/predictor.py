@@ -59,24 +59,18 @@ _WIN_FEATURES = [
     "kill_participation",
     "vision_control",
     "death_rate",
-    "role_SOLO",
+    "cs_per_min",
     "role_DUO",
     "role_DUO_CARRY",
     "role_DUO_SUPPORT",
     "role_NONE",
+    "role_SOLO",
+    "position_BOT",
+    "position_JUNGLE",
     "position_MID",
     "position_TOP",
-    "position_JUNGLE",
-    "position_BOT",
-    "primary_class_Skirmisher",
-    "primary_class_Assassin",
-    "primary_class_Fighter",
-    "primary_class_Mage",
-    "primary_class_Marksman",
-    "primary_class_Support",
-    "primary_class_Tank",
-    "primary_class_Unknown",
     "primary_class_Artillery",
+    "primary_class_Assassin",
     "primary_class_Assassin  Diver",
     "primary_class_Battlemage",
     "primary_class_Burst",
@@ -87,9 +81,12 @@ _WIN_FEATURES = [
     "primary_class_Enchanter",
     "primary_class_Enchanter  Warden",
     "primary_class_Juggernaut",
+    "primary_class_Marksman",
     "primary_class_Marksman  Artillery",
     "primary_class_Marksman  Catcher",
+    "primary_class_Skirmisher",
     "primary_class_Specialist",
+    "primary_class_Unknown",
     "primary_class_Vanguard",
     "primary_class_Warden",
 ]
@@ -98,10 +95,8 @@ _WIN_FEATURES = [
 _PERF_FEATURES = [
     "kda_ratio",
     "gold_per_min",
-    "damage_efficiency",
     "kill_participation",
     "vision_control",
-    "death_rate",
 ]
 
 
@@ -137,15 +132,16 @@ def predict(player: dict[str, Any]) -> dict[str, Any]:
     win_prob: float = float(_win_predictor.predict_proba(win_df)[0][1])
 
     # --- Performance score -----------------------------------------------
-    perf_df = _build_dataframe(player, _PERF_FEATURES)
-    perf_scaled = _perf_scaler.transform(perf_df)
-    raw_score: float = float(_performance_scorer.predict(perf_scaled)[0])
+    # The performance scorer was trained on the same 36 features to predict the composite score
+    raw_score: float = float(_performance_scorer.predict(win_df)[0])
     performance_score = float(np.clip(raw_score, 0, 100))
 
     # --- Playstyle cluster -----------------------------------------------
-    cluster_df = _build_dataframe(player, _CLUSTER_FEATURES)
-    cluster_id: int = int(_playstyle_clusterer.predict(cluster_df)[0])
-    playstyle = CLUSTER_LABELS.get(cluster_id, f"Cluster {cluster_id}")
+    cluster_features = _playstyle_clusterer["features"]
+    cluster_df = _build_dataframe(player, cluster_features)
+    cluster_scaled = _playstyle_clusterer["scaler"].transform(cluster_df)
+    cluster_id = int(_playstyle_clusterer["kmeans"].predict(cluster_scaled)[0])
+    playstyle = _playstyle_clusterer["labels_map"].get(cluster_id, f"Cluster {cluster_id}")
 
     return {
         "win_probability": round(win_prob, 4),

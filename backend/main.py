@@ -66,6 +66,7 @@ class PlayerStats(BaseModel):
     kill_participation: float = Field(..., ge=0, le=1, description="(kills+assists)/team_kills")
     vision_control: float = Field(..., ge=0, description="Vision score per minute")
     death_rate: float = Field(..., ge=0, description="Deaths per minute")
+    cs_per_min: float = Field(..., ge=0, description="Creep score per minute")
 
     # Optional metadata / one-hot columns (default 0)
     model_config = {"extra": "allow"}
