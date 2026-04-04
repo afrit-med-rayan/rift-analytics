@@ -1,38 +1,33 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 
 /* ============================================================
-   CSS Design Tokens
+   Hextech Design Tokens (League of Legends Gaming Vibe)
    ============================================================ */
 :root {
   /* Color palette */
-  --clr-bg:          #07080f;
-  --clr-bg-2:        #0d0e1a;
-  --clr-surface:     rgba(255, 255, 255, 0.04);
-  --clr-surface-hover: rgba(255, 255, 255, 0.07);
-  --clr-border:      rgba(255, 255, 255, 0.08);
-  --clr-border-glow: rgba(139, 92, 246, 0.35);
-
-  /* Accent — violet / gold */
-  --clr-violet:      #8b5cf6;
-  --clr-violet-dim:  rgba(139, 92, 246, 0.15);
-  --clr-gold:        #f59e0b;
-  --clr-gold-dim:    rgba(245, 158, 11, 0.15);
-  --clr-cyan:        #22d3ee;
-  --clr-cyan-dim:    rgba(34, 211, 238, 0.12);
-  --clr-rose:        #f43f5e;
-  --clr-rose-dim:    rgba(244, 63, 94, 0.15);
-  --clr-emerald:     #10b981;
-  --clr-emerald-dim: rgba(16, 185, 129, 0.15);
-
-  /* Severity */
-  --sev-high:   #f43f5e;
-  --sev-medium: #f59e0b;
-  --sev-low:    #10b981;
-
+  --clr-bg:          #010a13;  /* Deep Navy Abyss */
+  --clr-panel:       #091428;  /* Panel Base */
+  --clr-panel-hover: #101c36;
+  --clr-border:      #1e2328;  /* LoL Client Dark Border */
+  --clr-border-gold: #c8aa6e;  /* Hextech Gold */
+  
+  /* Primary Accents */
+  --clr-gold:        #f0e6d2;  /* Light Gold Text */
+  --clr-gold-accent: #c8aa6e;  /* Classic Hextech Gold */
+  --clr-gold-dim:    rgba(200, 170, 110, 0.15);
+  
+  --clr-cyan:        #0ac8b9;  /* Magic Hextech Cyan */
+  --clr-cyan-dim:    rgba(10, 200, 185, 0.12);
+  
+  /* Severity / State Colors */
+  --sev-high:   #d13639; /* Noxus Red */
+  --sev-medium: #c8aa6e; /* Shurima Gold */
+  --sev-low:    #00bfa5; /* Chemtech Green */
+  
   /* Text */
-  --txt-primary:   #f1f5f9;
-  --txt-secondary: #94a3b8;
-  --txt-muted:     #475569;
+  --txt-primary:   #f0e6d2;  /* LoL Light Text */
+  --txt-secondary: #a09b8c;
+  --txt-muted:     #6a655c;
 
   /* Spacing */
   --gap-xs:  4px;
@@ -41,14 +36,15 @@
   --gap-lg:  24px;
   --gap-xl:  40px;
 
-  /* Radius */
-  --r-sm: 8px;
-  --r-md: 16px;
-  --r-lg: 24px;
+  /* Fonts */
+  --font-epic: 'Cinzel', serif;
+  --font-tech: 'Rajdhani', sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
 
   /* Transition */
-  --ease: cubic-bezier(0.4, 0, 0.2, 1);
-  --dur: 220ms;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur: 200ms;
 }
 
 /* ============================================================
@@ -66,8 +62,12 @@ html {
 }
 
 body {
-  font-family: 'Outfit', system-ui, sans-serif;
+  font-family: var(--font-body);
   background: var(--clr-bg);
+  background-image: 
+    linear-gradient(rgba(30, 35, 40, 0.3) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(30, 35, 40, 0.3) 1px, transparent 1px);
+  background-size: 60px 60px;
   color: var(--txt-primary);
   min-height: 100vh;
   line-height: 1.6;
@@ -75,44 +75,16 @@ body {
   overflow-x: hidden;
 }
 
-/* ============================================================
-   Background Gradient Orbs (global)
-   ============================================================ */
-body::before,
+/* Base Hex Base Vector behind the app */
 body::after {
   content: '';
   position: fixed;
-  border-radius: 50%;
-  filter: blur(120px);
+  top: 50%; left: 50%;
+  width: 150vw; height: 150vw;
+  background: radial-gradient(circle, rgba(10, 200, 185, 0.03) 0%, transparent 60%);
+  transform: translate(-50%, -50%);
   pointer-events: none;
-  z-index: 0;
-}
-
-body::before {
-  width: 600px;
-  height: 600px;
-  background: radial-gradient(circle, rgba(139, 92, 246, 0.12) 0%, transparent 70%);
-  top: -200px;
-  left: -100px;
-  animation: orbDrift1 20s ease-in-out infinite;
-}
-
-body::after {
-  width: 500px;
-  height: 500px;
-  background: radial-gradient(circle, rgba(245, 158, 11, 0.08) 0%, transparent 70%);
-  bottom: -150px;
-  right: -100px;
-  animation: orbDrift2 25s ease-in-out infinite;
-}
-
-@keyframes orbDrift1 {
-  0%, 100% { transform: translate(0, 0); }
-  50%       { transform: translate(60px, 40px); }
-}
-@keyframes orbDrift2 {
-  0%, 100% { transform: translate(0, 0); }
-  50%       { transform: translate(-40px, -60px); }
+  z-index: -1;
 }
 
 /* ============================================================
@@ -129,23 +101,9 @@ body::after {
   padding: var(--gap-lg) var(--gap-lg) var(--gap-xl);
 }
 
-.grid-2 {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--gap-lg);
-}
-
-.grid-3 {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--gap-lg);
-}
-
-.grid-4 {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: var(--gap-lg);
-}
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap-lg); }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--gap-lg); }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--gap-lg); }
 
 @media (max-width: 1100px) {
   .grid-4 { grid-template-columns: repeat(2, 1fr); }
@@ -157,43 +115,64 @@ body::after {
 }
 
 /* ============================================================
-   Glass Card
+   Hextech Panels (Sharp Corners, Tech borders)
    ============================================================ */
-.glass-card {
-  background: var(--clr-surface);
+.hextech-panel {
+  background: var(--clr-panel);
   border: 1px solid var(--clr-border);
-  border-radius: var(--r-md);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  position: relative;
   padding: var(--gap-lg);
-  transition: border-color var(--dur) var(--ease),
-              box-shadow var(--dur) var(--ease),
+  box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.5), 0 4px 12px rgba(0, 0, 0, 0.4);
+  /* The chamfered look - cutting top-left and bottom-right */
+  clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
+  transition: background var(--dur) var(--ease),
+              border-color var(--dur) var(--ease),
               transform var(--dur) var(--ease);
 }
 
-.glass-card:hover {
-  border-color: var(--clr-border-glow);
-  box-shadow: 0 0 32px rgba(139, 92, 246, 0.08);
-  transform: translateY(-2px);
+/* Decorative corner accents */
+.hextech-panel::before,
+.hextech-panel::after {
+  content: '';
+  position: absolute;
+  background: var(--clr-border-gold);
+  opacity: 0.5;
+  transition: opacity var(--dur) var(--ease);
+}
+.hextech-panel::before { top: 0; left: 12px; right: 12px; height: 1px; }
+.hextech-panel::after { bottom: 0; left: 12px; right: 12px; height: 1px; }
+
+.hextech-panel.interactive:hover {
+  background: var(--clr-panel-hover);
+  border-color: rgba(200, 170, 110, 0.4);
+}
+.hextech-panel.interactive:hover::before,
+.hextech-panel.interactive:hover::after {
+  opacity: 1;
 }
 
 .card-title {
-  font-size: 0.7rem;
-  font-weight: 600;
+  font-family: var(--font-epic);
+  font-size: 0.85rem;
+  font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--txt-secondary);
+  color: var(--clr-gold-accent);
   margin-bottom: var(--gap-md);
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
 }
 
 .section-title {
-  font-size: 1.1rem;
+  font-family: var(--font-epic);
+  font-size: 1.3rem;
   font-weight: 700;
-  color: var(--txt-primary);
+  color: var(--clr-gold);
   margin-bottom: var(--gap-lg);
   display: flex;
   align-items: center;
   gap: var(--gap-sm);
+  letter-spacing: 0.05em;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.8);
 }
 
 .section-title::before {
@@ -201,49 +180,30 @@ body::after {
   display: block;
   width: 4px;
   height: 1.2em;
-  background: linear-gradient(to bottom, var(--clr-violet), var(--clr-gold));
-  border-radius: 2px;
+  background: var(--clr-cyan);
+  box-shadow: 0 0 8px var(--clr-cyan);
 }
 
 /* ============================================================
-   Badge / Pill
+   Badge / Pill (Gaming variant)
    ============================================================ */
 .badge {
+  font-family: var(--font-tech);
   display: inline-flex;
   align-items: center;
   gap: var(--gap-xs);
-  padding: 3px 10px;
-  border-radius: 99px;
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
+  padding: 2px 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: 1px solid transparent;
 }
 
-.badge-violet {
-  background: var(--clr-violet-dim);
-  color: var(--clr-violet);
-  border: 1px solid rgba(139, 92, 246, 0.3);
-}
-.badge-gold {
-  background: var(--clr-gold-dim);
-  color: var(--clr-gold);
-  border: 1px solid rgba(245, 158, 11, 0.3);
-}
-.badge-cyan {
-  background: var(--clr-cyan-dim);
-  color: var(--clr-cyan);
-  border: 1px solid rgba(34, 211, 238, 0.3);
-}
-.badge-rose {
-  background: var(--clr-rose-dim);
-  color: var(--clr-rose);
-  border: 1px solid rgba(244, 63, 94, 0.3);
-}
-.badge-emerald {
-  background: var(--clr-emerald-dim);
-  color: var(--clr-emerald);
-  border: 1px solid rgba(16, 185, 129, 0.3);
-}
+.badge-cyan { background: rgba(10, 200, 185, 0.1); color: var(--clr-cyan); border-color: rgba(10, 200, 185, 0.3); }
+.badge-gold { background: rgba(200, 170, 110, 0.1); color: var(--clr-gold-accent); border-color: rgba(200, 170, 110, 0.3); }
+.badge-rose { background: rgba(209, 54, 57, 0.1); color: var(--sev-high); border-color: rgba(209, 54, 57, 0.3); }
+.badge-emerald { background: rgba(0, 191, 165, 0.1); color: var(--sev-low); border-color: rgba(0, 191, 165, 0.3); }
 
 /* ============================================================
    Loading Skeleton
@@ -251,32 +211,32 @@ body::after {
 .skeleton {
   background: linear-gradient(
     90deg,
-    rgba(255,255,255,0.04) 25%,
-    rgba(255,255,255,0.08) 50%,
-    rgba(255,255,255,0.04) 75%
+    rgba(30, 35, 40, 0.5) 25%,
+    rgba(30, 35, 40, 0.8) 50%,
+    rgba(30, 35, 40, 0.5) 75%
   );
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
-  border-radius: var(--r-sm);
 }
-
 @keyframes shimmer {
   from { background-position: 200% 0; }
   to   { background-position: -200% 0; }
 }
 
 /* ============================================================
-   Scrollbar
+   Scrollbar (Sharp)
    ============================================================ */
 ::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(139, 92, 246, 0.3); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(139, 92, 246, 0.5); }
+::-webkit-scrollbar-track { background: var(--clr-bg); }
+::-webkit-scrollbar-thumb { background: var(--clr-border); border-radius: 0; }
+::-webkit-scrollbar-thumb:hover { background: var(--clr-gold-accent); }
 
 /* ============================================================
    Utility
    ============================================================ */
-.mono { font-family: 'JetBrains Mono', monospace; }
+.font-epic { font-family: var(--font-epic); }
+.font-tech { font-family: var(--font-tech); }
+.mono { font-family: var(--font-mono); }
 .text-secondary { color: var(--txt-secondary); }
 .text-muted { color: var(--txt-muted); }
 .mt-sm { margin-top: var(--gap-sm); }
@@ -284,20 +244,13 @@ body::after {
 .mt-lg { margin-top: var(--gap-lg); }
 .w-full { width: 100%; }
 
-/* ============================================================
-   Fade-in animation (applied via JS / CSS class)
-   ============================================================ */
+/* Fade-in */
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(20px); }
+  from { opacity: 0; transform: translateY(10px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-
-.fade-up {
-  animation: fadeUp 0.5s var(--ease) both;
-}
-
+.fade-up { animation: fadeUp 0.4s var(--ease) both; }
 .fade-up-1 { animation-delay: 0.05s; }
 .fade-up-2 { animation-delay: 0.10s; }
 .fade-up-3 { animation-delay: 0.15s; }
 .fade-up-4 { animation-delay: 0.20s; }
-.fade-up-5 { animation-delay: 0.25s; }

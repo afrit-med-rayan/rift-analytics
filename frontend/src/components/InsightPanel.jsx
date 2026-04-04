@@ -1,32 +1,32 @@
 import React from 'react';
 
 /**
- * InsightPanel.jsx — Renders priority-sorted insight cards with severity styling.
+ * InsightPanel.jsx — Renders priority-sorted insight cards (Hextech style)
  */
 
 const SEVERITY_CONFIG = {
   high: {
-    label: 'High Priority',
-    color: 'var(--sev-high)',
-    bg: 'rgba(244, 63, 94, 0.07)',
-    border: 'rgba(244, 63, 94, 0.2)',
-    icon: '🔴',
+    label: 'Critical Alert',
+    color: 'var(--sev-high)', // Noxus Red
+    bg: 'rgba(209, 54, 57, 0.05)',
+    border: 'rgba(209, 54, 57, 0.4)',
+    icon: '⚠',
     bar: 'var(--sev-high)',
   },
   medium: {
-    label: 'Medium Priority',
-    color: 'var(--sev-medium)',
-    bg: 'rgba(245, 158, 11, 0.07)',
-    border: 'rgba(245, 158, 11, 0.2)',
-    icon: '🟡',
+    label: 'Warning',
+    color: 'var(--sev-medium)', // Shurima Gold
+    bg: 'rgba(200, 170, 110, 0.05)',
+    border: 'rgba(200, 170, 110, 0.3)',
+    icon: '⚑',
     bar: 'var(--sev-medium)',
   },
   low: {
-    label: 'Positive',
-    color: 'var(--sev-low)',
-    bg: 'rgba(16, 185, 129, 0.07)',
-    border: 'rgba(16, 185, 129, 0.2)',
-    icon: '🟢',
+    label: 'Optimal',
+    color: 'var(--sev-low)', // Chemtech Green
+    bg: 'rgba(0, 191, 165, 0.05)',
+    border: 'rgba(0, 191, 165, 0.3)',
+    icon: '✓',
     bar: 'var(--sev-low)',
   },
 };
@@ -38,69 +38,63 @@ function InsightCard({ insight, index }) {
     <div
       className={`fade-up fade-up-${Math.min(index + 1, 5)}`}
       style={{
-        background: cfg.bg,
+        background: '#010a13',
         border: `1px solid ${cfg.border}`,
-        borderRadius: '12px',
         padding: '16px',
         position: 'relative',
-        overflow: 'hidden',
-        transition: 'transform 220ms cubic-bezier(0.4,0,0.2,1), box-shadow 220ms cubic-bezier(0.4,0,0.2,1)',
+        transition: 'transform var(--dur) var(--ease), border-color var(--dur)',
         cursor: 'default',
+        boxShadow: `inset 0 0 15px ${cfg.bg}`,
       }}
       onMouseEnter={(e) => {
-        e.currentTarget.style.transform = 'translateY(-2px)';
-        e.currentTarget.style.boxShadow = `0 8px 24px ${cfg.border}`;
+        e.currentTarget.style.transform = 'translateX(4px)';
+        e.currentTarget.style.borderColor = cfg.color;
       }}
       onMouseLeave={(e) => {
-        e.currentTarget.style.transform = 'translateY(0)';
-        e.currentTarget.style.boxShadow = 'none';
+        e.currentTarget.style.transform = 'translateX(0)';
+        e.currentTarget.style.borderColor = cfg.border;
       }}
     >
-      {/* Severity accent bar */}
       <div style={{
         position: 'absolute',
         left: 0,
         top: 0,
         bottom: 0,
-        width: '3px',
+        width: '4px',
         background: cfg.bar,
-        borderRadius: '12px 0 0 12px',
+        boxShadow: `0 0 8px ${cfg.color}`,
       }} />
 
-      <div style={{ paddingLeft: '8px' }}>
-        {/* Header row */}
+      <div style={{ paddingLeft: '12px' }}>
         <div style={{
           display: 'flex',
           alignItems: 'center',
           gap: '8px',
           marginBottom: '8px',
         }}>
-          <span style={{ fontSize: '0.85rem' }}>{cfg.icon}</span>
-          <span style={{
-            fontSize: '0.65rem',
+          <span style={{ fontSize: '0.9rem', color: cfg.color }}>{cfg.icon}</span>
+          <span className="font-tech" style={{
+            fontSize: '0.75rem',
             fontWeight: 700,
-            letterSpacing: '0.1em',
+            letterSpacing: '0.15em',
             textTransform: 'uppercase',
             color: cfg.color,
           }}>
             {cfg.label}
           </span>
-          <span style={{
+          <span className="font-mono" style={{
             marginLeft: 'auto',
-            fontSize: '0.65rem',
+            fontSize: '0.7rem',
             color: 'var(--txt-muted)',
-            fontFamily: 'JetBrains Mono, monospace',
           }}>
-            #{index + 1}
+            LOG_ENTRY_0{index + 1}
           </span>
         </div>
 
-        {/* Insight text */}
         <p style={{
-          fontSize: '0.87rem',
+          fontSize: '0.88rem',
           color: 'var(--txt-primary)',
-          lineHeight: 1.65,
-          opacity: 0.9,
+          lineHeight: 1.6,
         }}>
           {insight.text}
         </p>
@@ -112,11 +106,11 @@ function InsightCard({ insight, index }) {
 export default function InsightPanel({ insights }) {
   if (!insights) {
     return (
-      <div className="glass-card">
-        <p className="card-title">AI Insights</p>
+      <div className="hextech-panel">
+        <p className="card-title">System Analysis Log</p>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           {[1, 2, 3].map((i) => (
-            <div key={i} className="skeleton" style={{ height: '80px', borderRadius: '12px' }} />
+            <div key={i} className="skeleton" style={{ height: '90px' }} />
           ))}
         </div>
       </div>
@@ -128,42 +122,34 @@ export default function InsightPanel({ insights }) {
   const lowCount = insights.filter((i) => i.severity === 'low').length;
 
   return (
-    <div className="glass-card fade-up fade-up-1">
-      {/* Panel header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
-        <p className="card-title" style={{ marginBottom: 0 }}>AI Insights</p>
-        <div style={{ display: 'flex', gap: '6px' }}>
-          {highCount > 0 && (
-            <span className="badge badge-rose">{highCount} critical</span>
-          )}
-          {medCount > 0 && (
-            <span className="badge badge-gold">{medCount} medium</span>
-          )}
-          {lowCount > 0 && (
-            <span className="badge badge-emerald">{lowCount} positive</span>
-          )}
+    <div className="hextech-panel fade-up fade-up-1">
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
+        <p className="card-title" style={{ marginBottom: 0 }}>System Analysis Log</p>
+        <div style={{ display: 'flex', gap: '8px' }}>
+          {highCount > 0 && <span className="badge badge-rose">{highCount} CRITICAL</span>}
+          {medCount > 0 && <span className="badge badge-gold">{medCount} WARNING</span>}
+          {lowCount > 0 && <span className="badge badge-emerald">{lowCount} OPTIMAL</span>}
         </div>
       </div>
 
-      {/* Insight cards */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
         {insights.map((insight, i) => (
           <InsightCard key={i} insight={insight} index={i} />
         ))}
       </div>
 
-      {/* Footer note */}
-      <div style={{
-        marginTop: '16px',
-        padding: '10px 14px',
-        background: 'rgba(139, 92, 246, 0.06)',
-        border: '1px solid rgba(139, 92, 246, 0.1)',
-        borderRadius: '8px',
-        fontSize: '0.74rem',
+      <div className="font-tech" style={{
+        marginTop: '20px',
+        padding: '12px',
+        background: '#010a13',
+        border: '1px solid var(--clr-border)',
+        fontSize: '0.75rem',
         color: 'var(--txt-muted)',
-        lineHeight: 1.5,
+        textTransform: 'uppercase',
+        letterSpacing: '0.05em',
+        textAlign: 'center'
       }}>
-        💡 Insights are generated by combining rule-based thresholds with ML feature importances from XGBoost.
+        [ Encrypted Transmission: Model XGB-34 // Telemetry Processed ]
       </div>
     </div>
   );

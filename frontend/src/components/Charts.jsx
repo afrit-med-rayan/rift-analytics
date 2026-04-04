@@ -20,10 +20,6 @@ import {
 /*  Radar Chart — 6-dimension performance profile                       */
 /* ------------------------------------------------------------------ */
 
-/**
- * Given raw player stats, normalise each dimension to 0-100
- * using rough population benchmarks derived from the training data.
- */
 function buildRadarData(player) {
   const clamp = (v, min, max) => Math.max(0, Math.min(100, ((v - min) / (max - min)) * 100));
 
@@ -42,15 +38,18 @@ const CustomRadarTooltip = ({ active, payload }) => {
   const { dim, value } = payload[0].payload;
   return (
     <div style={{
-      background: 'rgba(13,14,26,0.95)',
-      border: '1px solid rgba(139,92,246,0.3)',
-      borderRadius: '10px',
-      padding: '10px 14px',
+      background: '#010a13',
+      border: '1px solid #c8aa6e',
+      padding: '8px 12px',
       fontSize: '0.82rem',
-      color: '#f1f5f9',
+      color: '#f0e6d2',
+      fontFamily: 'Rajdhani, sans-serif',
+      textTransform: 'uppercase',
+      letterSpacing: '0.05em',
+      boxShadow: '0 4px 12px rgba(0,0,0,0.8), inset 0 0 10px rgba(200, 170, 110, 0.1)',
     }}>
-      <div style={{ fontWeight: 700, color: '#8b5cf6', marginBottom: '2px' }}>{dim}</div>
-      <div>{value.toFixed(1)} / 100</div>
+      <div style={{ fontWeight: 700, color: '#0ac8b9', marginBottom: '2px' }}>{dim}</div>
+      <div style={{ fontFamily: 'JetBrains Mono, monospace' }}>{value.toFixed(1)} / 100</div>
     </div>
   );
 };
@@ -58,33 +57,33 @@ const CustomRadarTooltip = ({ active, payload }) => {
 function PlayerRadar({ player }) {
   const data = buildRadarData(player);
   return (
-    <div className="glass-card fade-up fade-up-2" style={{ minHeight: '340px' }}>
-      <p className="card-title">Performance Radar</p>
+    <div className="hextech-panel fade-up fade-up-2" style={{ minHeight: '340px' }}>
+      <p className="card-title">Combat Telemetry</p>
       <ResponsiveContainer width="100%" height={280}>
-        <RadarChart data={data} cx="50%" cy="50%" outerRadius="75%">
+        <RadarChart data={data} cx="50%" cy="50%" outerRadius="70%">
           <PolarGrid
-            stroke="rgba(255,255,255,0.06)"
+            stroke="#1e2328"
             gridType="polygon"
           />
           <PolarAngleAxis
             dataKey="dim"
-            tick={{ fill: '#94a3b8', fontSize: 11, fontFamily: 'Outfit, sans-serif', fontWeight: 500 }}
+            tick={{ fill: '#c8aa6e', fontSize: 11, fontFamily: 'Rajdhani, sans-serif', fontWeight: 600, textTransform: 'uppercase' }}
             tickLine={false}
           />
           <PolarRadiusAxis domain={[0, 100]} tick={false} axisLine={false} />
           <defs>
             <linearGradient id="radarGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#8b5cf6" stopOpacity={0.6} />
-              <stop offset="100%" stopColor="#f59e0b" stopOpacity={0.3} />
+              <stop offset="0%" stopColor="#0ac8b9" stopOpacity={0.4} />
+              <stop offset="100%" stopColor="#0ac8b9" stopOpacity={0.05} />
             </linearGradient>
           </defs>
           <Radar
             name="Player"
             dataKey="value"
-            stroke="#8b5cf6"
+            stroke="#0ac8b9"
             strokeWidth={2}
             fill="url(#radarGrad)"
-            dot={{ r: 4, fill: '#8b5cf6', strokeWidth: 0 }}
+            dot={{ r: 3, fill: '#010a13', stroke: '#0ac8b9', strokeWidth: 2 }}
           />
           <Tooltip content={<CustomRadarTooltip />} />
         </RadarChart>
@@ -97,17 +96,15 @@ function PlayerRadar({ player }) {
 /*  Line Chart — simulated performance trend over recent games          */
 /* ------------------------------------------------------------------ */
 
-/** Deterministically generate a reasonable-looking performance history. */
 function buildTrendData(baseScore) {
   const games = 10;
   const points = [];
   let score = baseScore;
 
-  // seed based on baseScore for reproducibility
   const seed = Math.floor(baseScore * 137);
   const pseudoRand = (i) => {
     const x = Math.sin(seed + i * 7.3) * 10000;
-    return x - Math.floor(x); // 0-1
+    return x - Math.floor(x);
   };
 
   for (let i = games; i >= 1; i--) {
@@ -115,7 +112,7 @@ function buildTrendData(baseScore) {
     const val = Math.max(5, Math.min(100, baseScore + noise));
     points.push({ game: `G-${i}`, score: parseFloat(val.toFixed(1)) });
   }
-  points.push({ game: 'Now', score: parseFloat(baseScore.toFixed(1)) });
+  points.push({ game: 'NOW', score: parseFloat(baseScore.toFixed(1)) });
   return points;
 }
 
@@ -123,16 +120,19 @@ const CustomLineTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null;
   return (
     <div style={{
-      background: 'rgba(13,14,26,0.95)',
-      border: '1px solid rgba(139,92,246,0.3)',
-      borderRadius: '10px',
-      padding: '10px 14px',
+      background: '#010a13',
+      border: '1px solid #c8aa6e',
+      padding: '8px 12px',
       fontSize: '0.82rem',
-      color: '#f1f5f9',
+      color: '#f0e6d2',
+      fontFamily: 'Rajdhani, sans-serif',
+      textTransform: 'uppercase',
+      letterSpacing: '0.05em',
+      boxShadow: '0 4px 12px rgba(0,0,0,0.8), inset 0 0 10px rgba(200, 170, 110, 0.1)',
     }}>
-      <div style={{ color: '#94a3b8', marginBottom: '4px' }}>{label}</div>
-      <div style={{ color: '#8b5cf6', fontWeight: 700 }}>
-        Score: {payload[0].value}
+      <div style={{ color: '#a09b8c', marginBottom: '4px' }}>Match: {label}</div>
+      <div style={{ color: '#c8aa6e', fontWeight: 700, fontFamily: 'JetBrains Mono, monospace' }}>
+        Rating: {payload[0].value}
       </div>
     </div>
   );
@@ -143,56 +143,61 @@ function PerformanceTrend({ score }) {
   const avg = data.reduce((s, d) => s + d.score, 0) / data.length;
 
   return (
-    <div className="glass-card fade-up fade-up-3" style={{ minHeight: '340px' }}>
-      <p className="card-title">Performance Trend (Simulated History)</p>
+    <div className="hextech-panel fade-up fade-up-3" style={{ minHeight: '340px' }}>
+      <p className="card-title">Performance Trend Matrix</p>
       <ResponsiveContainer width="100%" height={280}>
         <LineChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
           <defs>
-            <linearGradient id="lineGrad" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stopColor="#8b5cf6" />
-              <stop offset="100%" stopColor="#f59e0b" />
+            <linearGradient id="lineGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#c8aa6e" stopOpacity={0.3}/>
+              <stop offset="100%" stopColor="#c8aa6e" stopOpacity={0}/>
             </linearGradient>
           </defs>
-          <CartesianGrid stroke="rgba(255,255,255,0.04)" strokeDasharray="4 4" />
+          <CartesianGrid stroke="#1e2328" strokeDasharray="3 3" vertical={false} />
           <XAxis
             dataKey="game"
-            tick={{ fill: '#94a3b8', fontSize: 10, fontFamily: 'Outfit, sans-serif' }}
+            tick={{ fill: '#a09b8c', fontSize: 11, fontFamily: 'JetBrains Mono, monospace' }}
             tickLine={false}
-            axisLine={{ stroke: 'rgba(255,255,255,0.06)' }}
+            axisLine={{ stroke: '#1e2328' }}
           />
           <YAxis
             domain={[0, 100]}
-            tick={{ fill: '#94a3b8', fontSize: 10, fontFamily: 'Outfit, sans-serif' }}
+            tick={{ fill: '#a09b8c', fontSize: 11, fontFamily: 'JetBrains Mono, monospace' }}
             tickLine={false}
             axisLine={false}
           />
-          <Tooltip content={<CustomLineTooltip />} cursor={{ stroke: 'rgba(139,92,246,0.3)', strokeWidth: 1 }} />
+          <Tooltip content={<CustomLineTooltip />} cursor={{ stroke: '#c8aa6e', strokeWidth: 1, strokeDasharray: '3 3' }} />
           <ReferenceLine
             y={avg}
-            stroke="rgba(245, 158, 11, 0.4)"
-            strokeDasharray="6 3"
-            label={{ value: `Avg ${avg.toFixed(0)}`, fill: '#f59e0b', fontSize: 10, position: 'insideTopRight' }}
+            stroke="#0ac8b9"
+            strokeDasharray="4 4"
+            label={{ value: `SYS AVG ${avg.toFixed(0)}`, fill: '#0ac8b9', fontSize: 10, position: 'insideTopRight', fontFamily: 'Rajdhani, sans-serif' }}
           />
           <Line
             type="monotone"
             dataKey="score"
-            stroke="url(#lineGrad)"
-            strokeWidth={2.5}
+            stroke="#c8aa6e"
+            strokeWidth={2}
             dot={(props) => {
-              const isNow = props.payload.game === 'Now';
+              const isNow = props.payload.game === 'NOW';
               return (
-                <circle
+                <polygon
                   key={props.index}
-                  cx={props.cx}
-                  cy={props.cy}
-                  r={isNow ? 6 : 3.5}
-                  fill={isNow ? '#f59e0b' : '#8b5cf6'}
-                  stroke={isNow ? 'rgba(245,158,11,0.4)' : 'rgba(139,92,246,0.3)'}
-                  strokeWidth={isNow ? 4 : 2}
+                  points={`${props.cx},${props.cy - 4} ${props.cx + 4},${props.cy} ${props.cx},${props.cy + 4} ${props.cx - 4},${props.cy}`}
+                  fill={isNow ? '#0ac8b9' : '#010a13'}
+                  stroke={isNow ? '#0ac8b9' : '#c8aa6e'}
+                  strokeWidth={2}
                 />
               );
             }}
-            activeDot={{ r: 7, fill: '#8b5cf6', stroke: 'rgba(139,92,246,0.4)', strokeWidth: 4 }}
+            activeDot={(props) => (
+              <polygon
+                points={`${props.cx},${props.cy - 6} ${props.cx + 6},${props.cy} ${props.cx},${props.cy + 6} ${props.cx - 6},${props.cy}`}
+                fill="#c8aa6e"
+                stroke="#0ac8b9"
+                strokeWidth={2}
+              />
+            )}
           />
         </LineChart>
       </ResponsiveContainer>
@@ -208,8 +213,8 @@ export default function Charts({ data }) {
     return (
       <div className="grid-2">
         {[1, 2].map((i) => (
-          <div key={i} className="glass-card" style={{ height: '340px' }}>
-            <div className="skeleton w-full" style={{ height: '100%', borderRadius: '12px' }} />
+          <div key={i} className="hextech-panel" style={{ height: '340px' }}>
+            <div className="skeleton w-full" style={{ height: '100%' }} />
           </div>
         ))}
       </div>
